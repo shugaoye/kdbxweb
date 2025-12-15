@@ -14,8 +14,9 @@ import {
     stringToBytes,
     zeroBuffer
 } from '../utils/byte-utils';
+import { Bytes } from '../defs/bytes';
 
-export type KdbxChallengeResponseFn = (challenge: ArrayBuffer) => Promise<ArrayBuffer | Uint8Array>;
+export type KdbxChallengeResponseFn = (challenge: Bytes) => Promise<Bytes | null>;
 
 export class KdbxCredentials {
     readonly ready: Promise<KdbxCredentials>;
@@ -25,7 +26,7 @@ export class KdbxCredentials {
 
     constructor(
         password: ProtectedValue | null,
-        keyFile?: ArrayBuffer | Uint8Array | null,
+        keyFile?: Bytes | null,
         challengeResponse?: KdbxChallengeResponseFn
     ) {
         this.ready = Promise.all([
@@ -48,7 +49,7 @@ export class KdbxCredentials {
         }
     }
 
-    setKeyFile(keyFile: ArrayBuffer | Uint8Array | null | undefined): Promise<void> {
+    setKeyFile(keyFile: Bytes | null | undefined): Promise<void> {
         if (keyFile && !(keyFile instanceof ArrayBuffer) && !(keyFile instanceof Uint8Array)) {
             return Promise.reject(new KdbxError(ErrorCodes.InvalidArg, 'keyFile'));
         }
@@ -142,7 +143,7 @@ export class KdbxCredentials {
         return Promise.resolve();
     }
 
-    getHash(challenge?: ArrayBuffer): Promise<ArrayBuffer> {
+    getHash(challenge?: Bytes): Promise<ArrayBuffer> {
         return this.ready.then(() => {
             return this.getChallengeResponse(challenge).then((chalResp) => {
                 const buffers: Uint8Array[] = [];
@@ -171,14 +172,16 @@ export class KdbxCredentials {
         });
     }
 
-    getChallengeResponse(challenge?: ArrayBuffer): Promise<ArrayBuffer | Uint8Array | null> {
+    getChallengeResponse(challenge?: Bytes): Promise<Bytes | null> {
         return Promise.resolve().then(() => {
             if (!this._challengeResponse || !challenge) {
                 return null;
             }
             return this._challengeResponse(challenge).then((response) => {
-                return CryptoEngine.sha256(arrayToBuffer(response)).then((hash) => {
-                    zeroBuffer(response);
+                return CryptoEngine.sha256(arrayToBuffer(response as Bytes)).then((hash) => {
+                    if (response) {
+                        zeroBuffer(response as Bytes);
+                    }
                     return hash;
                 });
             });

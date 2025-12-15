@@ -7,12 +7,13 @@ import {
     stringToBytes,
     zeroBuffer
 } from '../utils/byte-utils';
+import { Bytes } from '../defs/bytes';
 
 export class ProtectedValue {
     readonly value: Uint8Array;
     readonly salt: Uint8Array;
 
-    constructor(value: ArrayBuffer, salt: ArrayBuffer) {
+    constructor(value: Bytes, salt: Bytes) {
         this.value = new Uint8Array(value);
         this.salt = new Uint8Array(salt);
     }
@@ -45,7 +46,7 @@ export class ProtectedValue {
     /**
      * Keep in mind that you're passing the ownership of this array, the contents will be destroyed
      */
-    static fromBinary(binary: ArrayBuffer): ProtectedValue {
+    static fromBinary(binary: Bytes): ProtectedValue {
         const bytes = new Uint8Array(binary),
             salt = CryptoEngine.random(bytes.length);
         for (let i = 0, len = bytes.length; i < len; i++) {
@@ -100,7 +101,7 @@ export class ProtectedValue {
         return bytes;
     }
 
-    setSalt(newSalt: ArrayBuffer): void {
+    setSalt(newSalt: Bytes): void {
         const newSaltArr = new Uint8Array(newSalt);
         const value = this.value,
             salt = this.salt;
