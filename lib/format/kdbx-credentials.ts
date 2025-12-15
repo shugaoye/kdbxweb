@@ -63,7 +63,7 @@ export class KdbxCredentials {
                 const keyFileStr = bytesToString(arrayToBuffer(keyFile));
                 if (/^[a-f\d]{64}$/i.exec(keyFileStr)) {
                     const bytes = hexToBytes(keyFileStr);
-                    this.keyFileHash = ProtectedValue.fromBinary(bytes);
+                    this.keyFileHash = ProtectedValue.fromBinary(arrayToBuffer(bytes));
                     return Promise.resolve();
                 }
                 const xml = XmlUtils.parse(keyFileStr.trim());
@@ -96,19 +96,21 @@ export class KdbxCredentials {
                     );
                 }
             } catch (e) {
-                return CryptoEngine.sha256(keyFile).then((hash) => {
+                return CryptoEngine.sha256(arrayToBuffer(keyFile)).then((hash) => {
                     this.keyFileHash = ProtectedValue.fromBinary(hash);
                 });
             }
 
             switch (keyFileVersion) {
                 case 1:
-                    this.keyFileHash = ProtectedValue.fromBinary(base64ToBytes(dataEl.textContent));
+                    this.keyFileHash = ProtectedValue.fromBinary(
+                        arrayToBuffer(base64ToBytes(dataEl.textContent))
+                    );
                     break;
                 case 2: {
                     const keyFileData = hexToBytes(dataEl.textContent.replace(/\s+/g, ''));
                     const keyFileDataHash = dataEl.getAttribute('Hash');
-                    return CryptoEngine.sha256(keyFileData).then((computedHash) => {
+                    return CryptoEngine.sha256(arrayToBuffer(keyFileData)).then((computedHash) => {
                         const computedHashStr = bytesToHex(
                             new Uint8Array(computedHash).subarray(0, 4)
                         ).toUpperCase();
@@ -118,7 +120,7 @@ export class KdbxCredentials {
                                 'key file data hash mismatch'
                             );
                         }
-                        this.keyFileHash = ProtectedValue.fromBinary(keyFileData);
+                        this.keyFileHash = ProtectedValue.fromBinary(arrayToBuffer(keyFileData));
                     });
                 }
                 default: {
@@ -191,7 +193,7 @@ export class KdbxCredentials {
             keyBytes[i] ^= salt[i];
             keyBytes[i] ^= (Math.random() * 1000) % 255;
         }
-        return KdbxCredentials.createKeyFileWithHash(keyBytes, version);
+        return KdbxCredentials.createKeyFileWithHash(arrayToBuffer(keyBytes), version);
     }
 
     static createKeyFileWithHash(keyBytes: ArrayBuffer, version = 1): Promise<Uint8Array> {

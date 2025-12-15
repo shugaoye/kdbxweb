@@ -51,7 +51,10 @@ export function bytesToBase64(arr: ArrayBufferOrArray): string {
         }
         return btoa(str);
     } else {
-        const buffer = Buffer.from(arr);
+        // Ensure we pass a Uint8Array / ArrayLike<number> to Buffer.from so
+        // TypeScript matches the node types. Use the earlier created intArr
+        // which is a Uint8Array when arr is ArrayBuffer.
+        const buffer = Buffer.from(intArr);
         return buffer.toString('base64');
     }
 }
@@ -78,14 +81,16 @@ export function bytesToHex(arr: ArrayBufferOrArray): string {
 }
 
 export function arrayToBuffer(arr: ArrayBufferOrArray): ArrayBuffer {
+    // Always return a plain ArrayBuffer (not SharedArrayBuffer). If input
+    // already is an ArrayBuffer, return it directly. If input is a
+    // Uint8Array (a view), construct a new Uint8Array copy and return its
+    // underlying buffer — this guarantees an ArrayBuffer and avoids TS
+    // complaints about SharedArrayBuffer.
     if (arr instanceof ArrayBuffer) {
         return arr;
     }
-    const ab = arr.buffer;
-    if (arr.byteOffset === 0 && arr.byteLength === ab.byteLength) {
-        return ab;
-    }
-    return arr.buffer.slice(arr.byteOffset, arr.byteOffset + arr.byteLength);
+    // Create a copy into a fresh ArrayBuffer and return that buffer.
+    return new Uint8Array(arr).buffer;
 }
 
 export function zeroBuffer(arr: ArrayBufferOrArray): void {

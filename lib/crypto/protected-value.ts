@@ -39,7 +39,7 @@ export class ProtectedValue {
 
     static fromBase64(base64: string): ProtectedValue {
         const bytes = base64ToBytes(base64);
-        return ProtectedValue.fromBinary(bytes);
+        return ProtectedValue.fromBinary(arrayToBuffer(bytes));
     }
 
     /**
@@ -111,7 +111,7 @@ export class ProtectedValue {
     }
 
     clone(): ProtectedValue {
-        return new ProtectedValue(this.value, this.salt);
+        return new ProtectedValue(arrayToBuffer(this.value), arrayToBuffer(this.salt));
     }
 
     get byteLength(): number {

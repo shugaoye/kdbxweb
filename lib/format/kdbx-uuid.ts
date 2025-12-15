@@ -1,4 +1,4 @@
-import { base64ToBytes, bytesToBase64 } from '../utils/byte-utils';
+import { base64ToBytes, bytesToBase64, arrayToBuffer } from '../utils/byte-utils';
 import { ErrorCodes } from '../defs/consts';
 import { KdbxError } from '../errors/kdbx-error';
 import * as CryptoEngine from '../crypto/crypto-engine';
@@ -14,7 +14,7 @@ export class KdbxUuid {
         if (ab === undefined) {
             ab = new ArrayBuffer(UuidLength);
         } else if (typeof ab === 'string') {
-            ab = base64ToBytes(ab);
+            ab = arrayToBuffer(base64ToBytes(ab));
         }
         if (ab.byteLength !== UuidLength) {
             throw new KdbxError(ErrorCodes.FileCorrupt, `bad UUID length: ${ab.byteLength}`);
@@ -32,7 +32,7 @@ export class KdbxUuid {
     }
 
     static random(): KdbxUuid {
-        return new KdbxUuid(CryptoEngine.random(UuidLength));
+        return new KdbxUuid(arrayToBuffer(CryptoEngine.random(UuidLength)));
     }
 
     toString(): string {
@@ -44,6 +44,6 @@ export class KdbxUuid {
     }
 
     toBytes(): ArrayBuffer {
-        return base64ToBytes(this.id);
+        return arrayToBuffer(base64ToBytes(this.id));
     }
 }
