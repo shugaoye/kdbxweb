@@ -51,7 +51,7 @@ describe('KdbxCustomData', () => {
                 ['k2', { value: 'v2' }]
             ])
         );
-        expect(XmlUtils.serialize(<Document>(<unknown>xml.documentElement))).to.eql(
+        expect(XmlUtils.serialize((xml.documentElement as unknown) as Document)).to.eql(
             '<root><CustomData>' +
                 '<Item><Key>k1</Key><Value>v1</Value></Item>' +
                 '<Item><Key>k2</Key><Value>v2</Value></Item>' +
@@ -63,7 +63,7 @@ describe('KdbxCustomData', () => {
         const xml = XmlUtils.create('root');
         KdbxCustomData.write(xml.documentElement, ctx, new Map());
         expect(
-            XmlUtils.serialize(<Document>(<unknown>xml.documentElement)).replace(/\s/g, '')
+            XmlUtils.serialize((xml.documentElement as unknown as Document)).replace(/\s/g, '')
         ).to.eql('<root><CustomData/></root>');
     });
 
@@ -71,7 +71,7 @@ describe('KdbxCustomData', () => {
         const xml = XmlUtils.create('root');
         KdbxCustomData.write(xml.documentElement, ctx, undefined);
         expect(
-            XmlUtils.serialize(<Document>(<unknown>xml.documentElement)).replace(/\s/g, '')
+            XmlUtils.serialize((xml.documentElement as unknown as Document)).replace(/\s/g, '')
         ).to.eql('<root/>');
     });
 
@@ -86,7 +86,7 @@ describe('KdbxCustomData', () => {
                 ['k3', { value: undefined }]
             ])
         );
-        expect(XmlUtils.serialize(<Document>(<unknown>xml.documentElement))).to.eql(
+        expect(XmlUtils.serialize((xml.documentElement as unknown as Document))).to.eql(
             '<root><CustomData>' +
                 '<Item><Key>k1</Key><Value>v1</Value></Item>' +
                 '</CustomData></root>'

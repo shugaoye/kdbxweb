@@ -1,15 +1,19 @@
 import * as path from 'path';
-import * as webpack from 'webpack';
+import webpack from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
+import * as fs from 'fs';
 
-import * as pkg from '../package.json';
+// @ts-ignore
+const __dirname = new URL('.', import.meta.url).pathname.replace(/^\/([a-z]:)/i, '$1');
+
+const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
 
 const debug = process.argv.indexOf('--mode=development') > 0;
 const license = `opensource.org/licenses/${pkg.license}`;
 const copyright = `(c) ${new Date().getFullYear()} ${pkg.author}, ${license}`;
 const banner = `kdbxweb v${pkg.version}, ${copyright}`;
 
-module.exports = {
+export default {
     context: path.join(__dirname, '../lib'),
     entry: './index.ts',
     output: {

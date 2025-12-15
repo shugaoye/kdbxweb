@@ -1,5 +1,12 @@
+// @ts-check
+/// <reference types="node" />
+// @ts-ignore
 import * as path from 'path';
 import { walkSync } from '@nodelib/fs.walk';
+
+// ESM compatible way to get __dirname
+// @ts-ignore
+const __dirname = path.resolve(new URL('.', import.meta.url).pathname.replace(/^\/([a-z]:)/i, '$1'));
 
 const files = walkSync('test', { entryFilter: (e) => e.name.endsWith('.ts') });
 const entry = files.map((f) => f.path.replace('test', '.'));
@@ -10,7 +17,7 @@ const entry = files.map((f) => f.path.replace('test', '.'));
         path.join(__dirname, '../node_modules')         expect.js
 */
 
-module.exports = {
+ export default {
     mode: 'production',
     context: path.join(__dirname, '../test'),
     entry,
