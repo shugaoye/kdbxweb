@@ -40,6 +40,7 @@
         "script:dump-header": "ts-node scripts/dump-header",
         "script:kdbx-size-profiler": "ts-node scripts/kdbx-size-profiler",
         "script:kdbx-to-xml": "ts-node scripts/kdbx-to-xml",
+        "script:device-lock-test": "ts-node scripts/device-lock-test",
         "script:make-big-files": "ts-node scripts/make-big-files",
         "script:save-perf-test": "ts-node scripts/save-perf-test"
     },
