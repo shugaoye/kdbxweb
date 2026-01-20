@@ -124,3 +124,35 @@ export const Icons = {
     Certificate: 67,
     BlackBerry: 68
 } as const;
+
+// PassXYZLib
+export const KeyFileSignature = "com.PassXYZ.KeyFile;k4xyz";
+
+/**
+   * File header of data and key files
+   * - Data: PassXYZ data file
+   * - Datax: PassXYZ data file encrpyted using key file
+   * - Key: PassXYZ key file
+   */
+export const FileHeader = {
+    Data: "pass_d_",
+    Datax: "pass_e_",
+    Key: "pass_k_",
+    None: ""
+} as const;
+
+/**
+ * File extensions of PassXYZ and KeePass data or key file
+ * - KeePass: KeePass data file
+ * - Data: PassXYZ data file
+ * - Key: PassXYZ key file
+ * - KeyV1: KeePass key file version 1
+ * - KeyV2: KeePass key file version 2
+ */
+export const FileExt = {
+    KeePass: ".kdbx",
+    KeyV1: ".key",
+    KeyV2: ".keyx",
+    Key: ".k4xyz",
+    Data: ".xyz"
+}

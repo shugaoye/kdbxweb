@@ -49,6 +49,7 @@ import { KdbxUuid } from './format/kdbx-uuid';
 import { BinaryStream } from './utils/binary-stream';
 import * as ByteUtils from './utils/byte-utils';
 import { Int64 } from './utils/int64';
+import { User } from './utils/user';
 import { VarDictionary } from './utils/var-dictionary';
 import * as XmlUtils from './utils/xml-utils';
 
@@ -99,6 +100,7 @@ export {
     BinaryStream,
     ByteUtils,
     Int64,
+    User,
     VarDictionary,
     XmlUtils
 };
