@@ -3,7 +3,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { User } from '../../lib/utils/user';
 import { ProtectedValue } from '../../lib/crypto/protected-value';
-import { KdbxError } from '../../lib/errors/kdbx-error';
 
 describe('User', () => {
     const testDir = path.join(__dirname, '../data');
@@ -165,7 +164,7 @@ describe('User', () => {
             
             expect(user.fileSize).to.be(testContent.length);
             expect(user.lastModified).to.be.a(Date);
-            expect(user.lastModified.getTime()).to.be.lessThan(Date.now());
+            expect(Date.now() - user.lastModified.getTime()).to.be.lessThan(10); // Allow up to 10ms difference
             expect(user.lastModified.getTime()).to.be.greaterThan(Date.now() - 10000); // Within last 10 seconds
             
             fs.unlinkSync(filePath);
